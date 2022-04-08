@@ -1,37 +1,51 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-
+import { connect } from 'react-redux';
 import clsx from 'clsx';
-
-// import { connect } from 'react-redux';
-// import { reduxSelector, reduxActionCreator } from '../../../redux/exampleRedux.js';
-
+import {getAllProducts, fetchAllProducts} from '../../../redux/productsRedux';
+import { Product } from '../Product/Product';
 import styles from './Homepage.module.scss';
 
-const Component = ({className, children}) => (
-  <div className={clsx(className, styles.root)}>
-    <h2>Homepage</h2>
-    {children}
-  </div>
-);
+const Component = ({ className, products, fetchAllProducts }) => {
 
-Component.propTypes = {
-  children: PropTypes.node,
-  className: PropTypes.string,
+  fetchAllProducts();
+
+  return (
+    <div className={clsx(className, styles.root)}>
+      <h2>Homepage</h2>
+      
+      <div>
+        {products.map(product => (
+          <Product key={product._id} product={product}></Product>
+        ))}
+      </div>
+  
+    </div>
+  );
 };
 
-// const mapStateToProps = state => ({
-//   someProp: reduxSelector(state),
-// });
+Component.propTypes = {
+  className: PropTypes.string,
+  products: PropTypes.array,
+  product: PropTypes.shape({
+    name: PropTypes.string,
+    _id: PropTypes.string,
+  }),
+  fetchAllProducts: PropTypes.func,
+};
 
-// const mapDispatchToProps = dispatch => ({
-//   someAction: arg => dispatch(reduxActionCreator(arg)),
-// });
+const mapStateToProps = state => ({
+  products: getAllProducts(state),
+});
 
-// const Container = connect(mapStateToProps, mapDispatchToProps)(Component);
+const mapDispatchToProps = dispatch => ({
+  fetchAllProducts: () => dispatch(fetchAllProducts()),
+});
+
+const Container = connect(mapStateToProps, mapDispatchToProps)(Component);
 
 export {
-  Component as Homepage,
-  // Container as Homepage,
+  // Component as Homepage,
+  Container as Homepage,
   Component as HomepageComponent,
 };
