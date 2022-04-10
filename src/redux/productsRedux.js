@@ -1,7 +1,12 @@
 import Axios from 'axios';
 
+
 /* selectors */
 export const getAllProducts = ({products}) => products.data;
+
+//export const getProductById = ({ products }, id) => {
+////  return products.data.filter((product) => product.id === id);
+//};
 
 /* action name creator */
 const reducerName = 'products';
@@ -13,6 +18,8 @@ const FETCH_SUCCESS = createActionName('FETCH_SUCCESS');
 const FETCH_ERROR = createActionName('FETCH_ERROR');
 
 const FETCH_PRODUCTS = createActionName('FETCH_PRODUCTS');
+const FETCH_ONE_PRODUCT = createActionName('FETCH_ONE_PRODUCT');
+
 
 /* action creators */
 export const fetchStarted = payload => ({ payload, type: FETCH_START });
@@ -20,6 +27,7 @@ export const fetchSuccess = payload => ({ payload, type: FETCH_SUCCESS });
 export const fetchError = payload => ({ payload, type: FETCH_ERROR });
 
 export const fetchProducts = payload => ({ payload, type: FETCH_PRODUCTS });
+export const fetchOneProduct = payload => ({payload, type: FETCH_ONE_PRODUCT});
 
 /* thunk creators */
 export const fetchAllProducts = () => async (dispatch, getState) => {
@@ -27,7 +35,7 @@ export const fetchAllProducts = () => async (dispatch, getState) => {
 
   if (!products.data.length) {
     dispatch(fetchStarted());
-    await Axios.get('http://localhost:8000/api/products')
+    await Axios.get(`http://localhost:8000/api/products`)
       .then(res => {
         dispatch(fetchProducts(res.data));
         dispatch(fetchSuccess(res.data));
@@ -36,6 +44,19 @@ export const fetchAllProducts = () => async (dispatch, getState) => {
         dispatch(fetchError(err.message || true));
       });
   }
+};
+
+export const fetchOneFromAPI = (_id) => {
+  return (dispatch, getState) => {
+    dispatch(fetchStarted());
+    Axios.get(`http://localhost:8000/api/products/${_id}`)
+      .then((res) => {
+        dispatch(fetchOneProduct(res.data));
+      })
+      .catch((err) => {
+        dispatch(fetchError(err.message || true));
+      });
+  };
 };
 
 
@@ -70,6 +91,17 @@ export const reducer = (statePart = [], action = {}) => {
         },
       };
     }
+    case FETCH_ONE_PRODUCT: {
+      return {
+        ...statePart,
+        loading: {
+          active: false,
+          error: false,
+        },
+        oneProduct: action.payload,
+      };
+    }
+    
     default:
       return statePart;
   }

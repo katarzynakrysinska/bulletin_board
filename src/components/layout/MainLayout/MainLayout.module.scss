@@ -1,4 +1,14 @@
 @import '../../../styles/settings.scss';
 
-// .root {
-// }
+* {
+  box-sizing: border-box;
+}
+
+.root {
+  margin: 3rem auto;
+  width: 90%;
+}
+
+body {
+  background-color: #dfdfdf;
+}

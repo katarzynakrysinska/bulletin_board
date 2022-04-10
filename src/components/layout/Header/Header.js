@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-
+import { NavLink } from 'react-router-dom';
 import clsx from 'clsx';
 
 // import { connect } from 'react-redux';
@@ -9,10 +9,23 @@ import clsx from 'clsx';
 import styles from './Header.module.scss';
 
 const Component = ({className, children}) => (
-  <div className={clsx(className, styles.root)}>
-    <h2>Header</h2>
+  <header className={clsx(className, styles.header)}>
+    <NavLink to={'/'} className={styles.logo}>Land Breeze</NavLink>
+    <nav>
+      <ul>
+        <li>
+          <NavLink to={'/cart'}>Cart</NavLink>
+        </li>
+        <li>
+          <NavLink to={'/cart'}>Contact Us</NavLink>
+        </li>
+        <li>
+          <NavLink to={'/cart'}>Login</NavLink>
+        </li>
+      </ul>
+    </nav>
     {children}
-  </div>
+  </header>
 );
 
 Component.propTypes = {
