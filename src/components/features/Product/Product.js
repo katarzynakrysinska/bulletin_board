@@ -30,8 +30,7 @@ const Component = ({className}) => {
   }
   else {
     return (
-      
-      <span className="visually-hidden">Loading...</span>
+      <span>Loading...</span>
       
     );
   }
