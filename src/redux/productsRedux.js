@@ -1,12 +1,12 @@
 import Axios from 'axios';
-
+import { API_URL } from '../config';
 
 /* selectors */
 export const getAllProducts = ({products}) => products.data;
 
-//export const getProductById = ({ products }, id) => {
-////  return products.data.filter((product) => product.id === id);
-//};
+export const getProductById = ({ products }, id) => {
+  return products.data.filter((product) => product.id === id);
+};
 
 /* action name creator */
 const reducerName = 'products';
@@ -35,7 +35,7 @@ export const fetchAllProducts = () => async (dispatch, getState) => {
 
   if (!products.data.length) {
     dispatch(fetchStarted());
-    await Axios.get(`http://localhost:8000/api/products`)
+    await Axios.get(`${API_URL}/products`)
       .then(res => {
         dispatch(fetchProducts(res.data));
         dispatch(fetchSuccess(res.data));
@@ -49,7 +49,7 @@ export const fetchAllProducts = () => async (dispatch, getState) => {
 export const fetchOneFromAPI = (_id) => {
   return (dispatch, getState) => {
     dispatch(fetchStarted());
-    Axios.get(`http://localhost:8000/api/products/${_id}`)
+    Axios.get(`${API_URL}/products/${_id}`)
       .then((res) => {
         dispatch(fetchOneProduct(res.data));
       })

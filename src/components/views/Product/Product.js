@@ -3,9 +3,9 @@ import PropTypes from 'prop-types';
 import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 // import { Link } from 'react-router-dom';
-import { getProductById, fetchOneFromAPI } from '../../../redux/productsRedux.js';
+import { fetchOneFromAPI } from '../../../redux/productsRedux.js';
 import clsx from 'clsx';
-import { connect } from 'react-redux';
+//import { connect } from 'react-redux';
 import styles from './Product.module.scss';
 
 
@@ -23,8 +23,25 @@ const Component = ({className}) => {
 
   if (product) {
     return (
-      <div className={clsx(className, styles.root)} fluid={'md'}>
-        {product.name}
+      <div className="styles.root">
+        <h1>Read more about the {product.name}</h1> 
+        <div className={styles.item}> 
+          <div className={clsx(className, styles.root)} fluid={'md'}>
+            {product.text} {product.text} {product.text}
+          </div>
+          <div className={styles.image}>
+            <img src={product.image2} alt="Example"></img>
+          </div>
+          <div className={styles.image}>
+            <img src={product.image3} alt="Example"></img>
+          </div>
+          <div className={styles.actions}>
+            <button className={styles.button}>
+              Add { product.name} to cart
+            </button>
+          </div>
+        </div>
+        
       </div>
     );
   }

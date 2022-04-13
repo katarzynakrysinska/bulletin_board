@@ -4,7 +4,7 @@ import { Provider } from 'react-redux';
 import { store } from './redux/store';
 
 import { Homepage } from './components/views/Homepage/Homepage';
-import { Product } from './components/features/Product/Product';
+import { Product } from './components/views/Product/Product';
 import { Cart } from './components/views/Cart/Cart';
 import { Order } from './components/views/Order/Order';
 import { NotFound } from './components/views/NotFound/NotFound';
