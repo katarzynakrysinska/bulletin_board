@@ -3,12 +3,14 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import clsx from 'clsx';
-import {getAllProducts, fetchAllProducts} from '../../../redux/productsRedux';
+import {getAllProducts, fetchAllProducts, getOne} from '../../../redux/productsRedux';
+import { addToCart } from '../../../redux/cartRedux';
 import styles from './Homepage.module.scss';
 
-const Component = ({ className, products, fetchAllProducts }) => {
+const Component = ({ className, product, fetchAllProducts, products}) => {
 
   fetchAllProducts();
+
 
   return (
     <div className={clsx(className, styles.root)}>
@@ -51,6 +53,8 @@ Component.propTypes = {
   product: PropTypes.shape({
     name: PropTypes.string,
     _id: PropTypes.string,
+    price: PropTypes.number,
+    image1: PropTypes.string,
   }),
   fetchAllProducts: PropTypes.func,
 };

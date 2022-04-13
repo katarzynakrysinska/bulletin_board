@@ -6,4 +6,10 @@ export const initialState = {
       error: false,
     },
   },
+  cart: {
+    items: [],
+  },
+  order: {
+    data: [],
+  },
 };
