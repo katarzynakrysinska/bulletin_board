@@ -5,6 +5,7 @@ export const initialState = {
       active: false,
       error: false,
     },
+    
   },
   cart: {
     items: [],
@@ -12,4 +13,5 @@ export const initialState = {
   order: {
     data: [],
   },
+
 };

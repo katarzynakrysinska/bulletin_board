@@ -4,13 +4,16 @@ import { useParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 // import { Link } from 'react-router-dom';
 import { fetchOneFromAPI, getOne } from '../../../redux/productsRedux.js';
+
+
 import { addToCart } from '../../../redux/cartRedux.js';
 import clsx from 'clsx';
 import { connect } from 'react-redux';
 import styles from './Product.module.scss';
 
 
-const Component = ({className, product, addToCart}) => {
+const Component = ({ className, product, addToCart }) => {
+
 
   const dispatch = useDispatch();
   const {id} = useParams();
@@ -24,6 +27,7 @@ const Component = ({className, product, addToCart}) => {
     _id: product && product._id,
     name: product && product.name,
     price: product && product.price,
+    image1: product && product.image1,
   };
 
   const handleAddToCart = e => {
@@ -50,12 +54,14 @@ const Component = ({className, product, addToCart}) => {
             <img src={product.image3} alt="Example"></img>
           </div>
         </div>
+
         <div className={styles.actions}>
           <button 
             onClick = {handleAddToCart}
             className={styles.button}>
-              Add { product.name} to cart
+                Add { product.name} to cart
           </button>
+        
         </div>  
         
       </div>
@@ -83,12 +89,14 @@ Component.propTypes = {
   fetchOneFromApi: PropTypes.func,
   match: PropTypes.object,
   addToCart: PropTypes.func,
+  cartItems: PropTypes.array,
 
 };
 
 
 const mapStateToProps = state => ({
   product: getOne(state),
+ 
 });
 
 const mapDispatchToProps = dispatch => ({

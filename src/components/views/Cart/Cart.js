@@ -1,62 +1,68 @@
 import React, { useEffect, useState } from 'react';
+import { Form } from 'react-bootstrap';
+import { AiFillDelete } from 'react-icons/ai';
 import PropTypes from 'prop-types';
-
-
 import clsx from 'clsx';
-
 import { connect } from 'react-redux';
-import { getCartItems } from '../../../redux/cartRedux.js';
-
+import { getCartItems, addToCart, removeItem } from '../../../redux/cartRedux.js';
 import styles from './Cart.module.scss';
-import { Link } from 'react-router-dom';
+// import { Link } from 'react-router-dom';
+import { getProductById } from '../../../redux/productsRedux.js';
 
+const Component = ({ className, cartItems, removeItem}) => {
 
-
-const Component = ({ className, cartItems }) => {
-
-  const [ subtotalPrice, setSubtotalPrice ] = useState(0);
+  const [total, setTotal] = useState();
 
   useEffect(() => {
-    let price = 0;
-    cartItems.forEach(item => {
-      price += parseInt(item.price);
-    });
-    setSubtotalPrice(price);
+    setTotal(cartItems.reduce((acc, curr) => acc + Number(curr.price) * curr.qty, 0));
   }, [cartItems]);
 
-  let deliveryFee = 12;
+  console.log(cartItems);
 
-  if (subtotalPrice > 99) {
-    deliveryFee = 0;
-  }
-
-  let totalPrice = subtotalPrice + deliveryFee;
-
-  
   return (
-    <div className={clsx(className, styles.cart_view)}>
-      <div className={clsx(className, styles.product_card_container)}>
+    <div className={clsx(className, styles.root)}>
+      <div>
+        {cartItems.length === 0 && <div>Cart Is Empty</div>}
+      </div>
+      <div className={clsx(className, styles.item)}>
         {cartItems.map((cartItem) => (
-          <Link key={cartItem._id} className={clsx(className, styles.product_card)} to={`/product/${cartItem._id}`}>
-            <img src={cartItem.image} alt={cartItem.name} />
-            <div className={clsx(className, styles.product_card_content)}>
+          <div key={cartItem.product} cartItem={cartItem} className={clsx(className, styles.content)} to={`/product/${cartItem._id}`}>
+            <div className={styles.image}>
+              <img src={cartItem.image1} alt={cartItem.name} />
+            </div>
+            <div className={clsx(className, styles.item)}>
               <h5>{cartItem.name}</h5>
-              <div className={clsx(className, styles.product_card_content_buttons)}>
-                <button>{cartItem.price} $</button>
+              <div className={clsx(className, styles.actions)}>
+                <button className={styles.button}>{cartItem.price} $</button>
               </div>
             </div>
-          </Link>
+            <Form.Control
+              as="select"
+              value={cartItems.qty}
+            >
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+            </Form.Control>
+            <button
+              type="button"
+              variant="light"
+              onClick={() => removeItem(cartItem.product)}>
+
+              <AiFillDelete fontSize="20px" />
+            </button>
+          </div>
         )
         )}
+
       </div>
-      <div className={clsx(className, styles.cart_prices)}>
-        {cartItems.length ? (
-          <div><h2>Products price: {subtotalPrice} $</h2>
-            <h2>Delivery: {deliveryFee} $</h2>
-            <h2>Products + delivery price: {totalPrice} $</h2>
-            <Link to='/order'><button className={clsx(className, styles.make_order)}>Make order</button></Link>
-          </div>) : (<div></div>)}
+      <div>
+        <span>Subtotal ({cartItems.length}) items</span>
       </div>
+      <span>Total: $ {total} </span>
+      
     </div>
   );
 };
@@ -66,14 +72,23 @@ Component.propTypes = {
   className: PropTypes.string,
   products: PropTypes.array,
   cartItems: PropTypes.array,
-  fetchAllProducts: PropTypes.func,
+  product: PropTypes.object,
+  match: PropTypes.object,
+  addToCart: PropTypes.func,
+  removeItem: PropTypes.func,
 };
 
 const mapStateToProps = state => ({
   cartItems: getCartItems(state),
+  product: getProductById(state),
 });
 
-const Container = connect(mapStateToProps)(Component);
+const mapDispatchToProps = dispatch => ({
+  addToCart: arg => dispatch(addToCart(arg)),
+  removeItem: (id) => dispatch(removeItem(id)),
+});
+
+const Container = connect(mapStateToProps, mapDispatchToProps)(Component);
 
 export {
   //Component as ProductsList,
