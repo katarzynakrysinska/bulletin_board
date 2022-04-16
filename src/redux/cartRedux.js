@@ -9,9 +9,11 @@ const createActionName = name => `app/${reducerName}/${name}`;
 const ADD_TO_CART = createActionName('ADD_TO_CART');
 const REMOVE_ITEM = createActionName('REMOVE_ITEM');
 
+
 /* action creators */
 export const addToCart = payload => ({ payload, type: ADD_TO_CART });
 export const removeItem = (id, size) => ({ payload: {id, size}, type: REMOVE_ITEM });
+
 
 /* thunk creators */
 

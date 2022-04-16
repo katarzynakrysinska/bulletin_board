@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { Form } from 'react-bootstrap';
+import { ListGroup, Row, Col, Image, FormControl} from 'react-bootstrap';
 import { AiFillDelete } from 'react-icons/ai';
 import PropTypes from 'prop-types';
-import clsx from 'clsx';
+//import clsx from 'clsx';
 import { connect } from 'react-redux';
-import { getCartItems, addToCart, removeItem } from '../../../redux/cartRedux.js';
+import { getCartItems, addToCart, removeItem} from '../../../redux/cartRedux.js';
 import styles from './Cart.module.scss';
 // import { Link } from 'react-router-dom';
 import { getProductById } from '../../../redux/productsRedux.js';
 
-const Component = ({ className, cartItems, removeItem}) => {
+const Component = ({ cartItems, removeItem, cartItem}) => {
 
   const [total, setTotal] = useState();
 
@@ -19,50 +19,55 @@ const Component = ({ className, cartItems, removeItem}) => {
 
   console.log(cartItems);
 
+  
+
   return (
-    <div className={clsx(className, styles.root)}>
-      <div>
-        {cartItems.length === 0 && <div>Cart Is Empty</div>}
-      </div>
-      <div className={clsx(className, styles.item)}>
-        {cartItems.map((cartItem) => (
-          <div key={cartItem.product} cartItem={cartItem} className={clsx(className, styles.content)} to={`/product/${cartItem._id}`}>
-            <div className={styles.image}>
-              <img src={cartItem.image1} alt={cartItem.name} />
-            </div>
-            <div className={clsx(className, styles.item)}>
-              <h5>{cartItem.name}</h5>
-              <div className={clsx(className, styles.actions)}>
-                <button className={styles.button}>{cartItem.price} $</button>
-              </div>
-            </div>
-            <Form.Control
-              as="select"
-              value={cartItems.qty}
-            >
-              <option value="1">1</option>
-              <option value="2">2</option>
-              <option value="3">3</option>
-              <option value="4">4</option>
-              <option value="5">5</option>
-            </Form.Control>
-            <button
-              type="button"
-              variant="light"
-              onClick={() => removeItem(cartItem.product)}>
+    <div className={styles.item}>
+      <div className={styles.productContainer}>
+        <ListGroup>
+          {cartItems.map((cartItem) => (
+            <ListGroup.Item key={cartItem.id}>
+              <Row >
+                <Col md={2}>
+                  <Image src={cartItem.image1} alt={cartItem.name} fluid rounded />
+                </Col>
+                <Col md={2}>
+                  <span>{cartItem.name}</span>
+                </Col>
+                <Col md={2}>
+                  {cartItem.price}
+                </Col>
+                <Col md={2}>
+                  <FormControl
+                    as="select"
+                    value={cartItem.qty} 
+  
+                  >
+                    <option>1</option>
+                    <option>2</option>
+                    <option>3</option>
+                    <option>4</option>
+                  </FormControl>
+                </Col>
+                <Col md={2}>
+                  <button
+                    type="button"
+                    variant="light"
+                    onClick={() => removeItem(cartItem.product)}>
 
-              <AiFillDelete fontSize="20px" />
-            </button>
-          </div>
-        )
-        )}
-
+                    <AiFillDelete fontSize="20px" />
+                  </button>
+                </Col>
+              </Row>
+            </ListGroup.Item>
+          )
+          )}
+        </ListGroup>
       </div>
-      <div>
+      <div className={styles.summary}>
         <span>Subtotal ({cartItems.length}) items</span>
+        <span>Total: $ {total} </span>
       </div>
-      <span>Total: $ {total} </span>
-      
     </div>
   );
 };
@@ -72,10 +77,14 @@ Component.propTypes = {
   className: PropTypes.string,
   products: PropTypes.array,
   cartItems: PropTypes.array,
-  product: PropTypes.object,
+  product: PropTypes.array,
   match: PropTypes.object,
   addToCart: PropTypes.func,
   removeItem: PropTypes.func,
+  changeCartQty: PropTypes.func,
+  id: PropTypes.string,
+  qty: PropTypes.number,
+  cartItem: PropTypes.object,
 };
 
 const mapStateToProps = state => ({
@@ -84,7 +93,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  addToCart: arg => dispatch(addToCart(arg)),
+  addToCart: (id) => dispatch(addToCart(id)), 
   removeItem: (id) => dispatch(removeItem(id)),
 });
 

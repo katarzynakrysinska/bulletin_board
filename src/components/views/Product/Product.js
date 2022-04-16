@@ -1,9 +1,10 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 // import { Link } from 'react-router-dom';
 import { fetchOneFromAPI, getOne } from '../../../redux/productsRedux.js';
+import { getCartItems, removeItem} from '../../../redux/cartRedux.js';
 
 
 import { addToCart } from '../../../redux/cartRedux.js';
@@ -12,8 +13,7 @@ import { connect } from 'react-redux';
 import styles from './Product.module.scss';
 
 
-const Component = ({ className, product, addToCart }) => {
-
+const Component = ({ className, product, addToCart, cartItems, removeItem}) => {
 
   const dispatch = useDispatch();
   const {id} = useParams();
@@ -35,6 +35,12 @@ const Component = ({ className, product, addToCart }) => {
     addToCart(addItemToCartObject);
   };
 
+  const handleRemoveFromCart = e => {
+    e.preventDefault();
+    removeItem(addItemToCartObject);
+  };
+  
+
   console.log(addItemToCartObject);
 
   
@@ -54,16 +60,27 @@ const Component = ({ className, product, addToCart }) => {
             <img src={product.image3} alt="Example"></img>
           </div>
         </div>
-
-        <div className={styles.actions}>
-          <button 
-            onClick = {handleAddToCart}
-            className={styles.button}>
-                Add { product.name} to cart
-          </button>
         
-        </div>  
-        
+        {cartItems.some((product) => product._id === addItemToCartObject._id) ? 
+          (
+            <div className={styles.actions}>
+              <button 
+                onClick = {handleRemoveFromCart}
+                className={styles.button}>
+                  Remove { product.name} to cart
+              </button>
+            </div> 
+          ) : (
+            <div className={styles.actions}>
+              <button 
+                onClick = {handleAddToCart}
+                className={styles.button}>
+                  Add { product.name} to cart
+              </button>
+            </div> 
+          )
+        }
+           
       </div>
     );
   }
@@ -90,18 +107,20 @@ Component.propTypes = {
   match: PropTypes.object,
   addToCart: PropTypes.func,
   cartItems: PropTypes.array,
+  removeItem: PropTypes.func,
 
 };
 
-
 const mapStateToProps = state => ({
   product: getOne(state),
+  cartItems: getCartItems(state),
  
 });
 
 const mapDispatchToProps = dispatch => ({
   fetchOneFromAPI: (id) => dispatch(fetchOneFromAPI(id)),
   addToCart: arg => dispatch(addToCart(arg)),
+  removeItem: arg => dispatch(removeItem(arg)),
 });
 
 const Container = connect(mapStateToProps, mapDispatchToProps)(Component);
